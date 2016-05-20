@@ -190,6 +190,8 @@ namespace MarchingCubesProject
                 //Center mesh
                 m_mesh.transform.localPosition = scale * new Vector3(-width / 2, -height / 2, -length / 2);
 
+                m_mesh.AddComponent<MeshCollider>();
+
             }
             Debug.Log("Time take = " + (Time.realtimeSinceStartup - start) * 1000.0f);
         }
