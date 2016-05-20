@@ -11,10 +11,10 @@ namespace MarchingCubesProject
         const int height = 32;
         const int length = 32;
         const int k = 1;
+        const float scale = 5f;
+        const int numSeeds = 8;
 
         public Material m_material;
-
-        PerlinNoise m_perlin;
         GameObject m_mesh;
 
         /// <summary>
@@ -86,12 +86,12 @@ namespace MarchingCubesProject
         // Use this for initialization
         void Start()
         {
-            m_perlin = new PerlinNoise(2);
+            Random.seed = 2;
 
             //Target is the value that represents the surface of mesh
             //For example the perlin noise has a range of -1 to 1 so the mid point is were we want the surface to cut through
             //The target value does not have to be the mid point it can be any value with in the range
-            MarchingCubes.SetTarget(-0.9f);
+            MarchingCubes.SetTarget(-0.925f);
 
             //Winding order of triangles use 2,1,0 or 0,1,2
             MarchingCubes.SetWindingOrder(2, 1, 0);
@@ -111,7 +111,7 @@ namespace MarchingCubesProject
 
             float start = Time.realtimeSinceStartup;
 
-            Vector3[] seeds = new Vector3[10]; //0 is displayed seed for now
+            Vector3[] seeds = new Vector3[numSeeds];
 
             for (int i = 0; i < seeds.Length; i++)
             {
@@ -176,7 +176,7 @@ namespace MarchingCubesProject
                     }
                 }
 
-                Mesh mesh = MarchingCubes.CreateMesh(voxels);
+                Mesh mesh = MarchingCubes.CreateMesh(voxels, scale);
 
                 //The diffuse shader wants uvs so just fill with a empty array, there not actually used
                 mesh.uv = new Vector2[mesh.vertices.Length];
@@ -188,7 +188,7 @@ namespace MarchingCubesProject
                 m_mesh.GetComponent<Renderer>().material = m_material;
                 m_mesh.GetComponent<MeshFilter>().mesh = mesh;
                 //Center mesh
-                m_mesh.transform.localPosition = new Vector3(-width / 2, -height / 2, -length / 2);
+                m_mesh.transform.localPosition = scale * new Vector3(-width / 2, -height / 2, -length / 2);
 
             }
             Debug.Log("Time take = " + (Time.realtimeSinceStartup - start) * 1000.0f);

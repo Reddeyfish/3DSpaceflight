@@ -26,7 +26,7 @@ namespace MarchingCubesProject
         static float[] tetrahedronValue = new float[4];
         static Vector3[] edgeTetVertex = new Vector3[6];
 
-        static public Mesh CreateMesh(float[,,] voxels)
+        static public Mesh CreateMesh(float[,,] voxels, float scale = 1)
         {
 
             List<Vector3> verts = new List<Vector3>();
@@ -50,7 +50,12 @@ namespace MarchingCubesProject
 
             Mesh mesh = new Mesh();
 
-            mesh.vertices = verts.ToArray();
+            for (int i = 0; i < verts.Count; i++)
+            {
+                verts[i] *= scale;
+            }
+
+                mesh.vertices = verts.ToArray();
             mesh.triangles = index.ToArray();
 
             return mesh;
