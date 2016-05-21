@@ -23,13 +23,13 @@ public class InputToAction : MonoBehaviour {
     protected float maxAcceleration;
 
     float speed;
-    Rigidbody rigidbody;
+    Rigidbody rigid;
 
     void Awake()
     {
         //Cursor.visible = false;
         speed = initialSpeed;
-        rigidbody = GetComponent<Rigidbody>();
+        rigid = GetComponent<Rigidbody>();
         ApplySpeed();
     }
 
@@ -48,7 +48,7 @@ public class InputToAction : MonoBehaviour {
 
         //cannot be done in one line, must be done in 2 steps to avoid resets
         Quaternion rotation = Quaternion.Euler(verticalRotation, horizontalRotation, rotationalRotation);
-        rigidbody.rotation *= rotation;
+        rigid.rotation *= rotation;
 
         float throttle = Mathf.Clamp(inputConfig.throttleSensitivity * Input.GetAxis(inputConfig.throttleAxis), -maxAcceleration * Time.deltaTime, maxAcceleration * Time.deltaTime);
         speed = Mathf.Clamp(speed + throttle, minSpeed, maxSpeed);
@@ -57,7 +57,7 @@ public class InputToAction : MonoBehaviour {
 
     void ApplySpeed()
     {
-        rigidbody.velocity = speed * transform.forward;
+        rigid.velocity = speed * transform.forward;
     }
 
     void OnCollisionEnter(Collision collision)
