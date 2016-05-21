@@ -4,12 +4,15 @@ using MarchingCubesProject;
 
 public class ProceduralGeneration : MonoBehaviour
 {
+    [SerializeField]
+    protected GameObject meshPrefab;
+
     public const int width = 32;
     public const int height = 32;
     public const int length = 32;
     public const int k = 1;
     public const float scale = 5f;
-    public const int numSeeds = 10;
+    public const int numSeeds = 12;
 
     public Material m_material;
     GameObject m_mesh;
@@ -179,16 +182,15 @@ public class ProceduralGeneration : MonoBehaviour
             mesh.uv = new Vector2[mesh.vertices.Length];
             mesh.RecalculateNormals();
 
-            m_mesh = new GameObject("Mesh");
-            m_mesh.AddComponent<MeshFilter>();
-            m_mesh.AddComponent<MeshRenderer>();
-            m_mesh.GetComponent<Renderer>().material = m_material;
+            m_mesh = Instantiate(meshPrefab);
             m_mesh.GetComponent<MeshFilter>().mesh = mesh;
             
             //Center mesh
             //m_mesh.transform.localPosition = scale * new Vector3(-width / 2, -height / 2, -length / 2);
 
-            m_mesh.AddComponent<MeshCollider>();
+            //meshcolliders need to be added as components to properly initialize
+            //so I can't put it in the prefab
+            m_mesh.AddComponent<MeshCollider>(); 
 
             ProceduralDuplication.AddToDuplicate(m_mesh);
 
