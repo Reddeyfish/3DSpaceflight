@@ -46,6 +46,8 @@ public class ProceduralDuplication : MonoBehaviour {
 
     static void duplicateGameObject(GameObject toDuplicate)
     {
+        List<GameObject> duplicates = new List<GameObject>();
+        duplicates.Add(toDuplicate);
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
@@ -56,9 +58,11 @@ public class ProceduralDuplication : MonoBehaviour {
                         continue;
                     GameObject duplicated = Instantiate(toDuplicate);
                     duplicated.transform.position = toDuplicate.transform.position + new Vector3(ProceduralGeneration.width * x, ProceduralGeneration.height * y, ProceduralGeneration.length * z);
+                    duplicates.Add(duplicated);
                 }
             }
         }
+        //StaticBatchingUtility.Combine(duplicates.ToArray(), toDuplicate);
     }
 
     static void simulateGameObject(GameObject toSimulate)

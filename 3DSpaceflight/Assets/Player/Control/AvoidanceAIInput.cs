@@ -12,20 +12,21 @@ public class AvoidanceAIInput : PlayerInput
     {
         base.Awake();
         controller.throttleAxis = 1;
+        wallsLayerMask = LayerMask.GetMask("Wall");
     }
 
     // Update is called once per frame
     void Update()
     {
         RaycastHit hit;
-        if (Physics.BoxCast(this.transform.position, new Vector3(1.5f, 0.375f, 1.5f), this.transform.forward, out hit, transform.rotation, maxDistance))
+        if (Physics.BoxCast(this.transform.position, new Vector3(1.5f, 0.375f, 1.5f), this.transform.forward, out hit, transform.rotation, maxDistance, wallsLayerMask))
         {
             float verticalComponent = -Mathf.Sign(Vector3.Dot(transform.up, hit.normal));
             float horizontalComponent = -Mathf.Sign(Vector3.Dot(transform.right, hit.normal));
             Quaternion rotation = controller.appliedRotationScaled(verticalComponent, horizontalComponent, 0);
 
             RaycastHit newHit;
-            if (Physics.BoxCast(this.transform.position, new Vector3(1.5f, 0.375f, 1.5f), rotation * Vector3.forward, out newHit, rotation, maxDistance))
+            if (Physics.BoxCast(this.transform.position, new Vector3(1.5f, 0.375f, 1.5f), rotation * Vector3.forward, out newHit, rotation, maxDistance, wallsLayerMask))
             {
                 if (newHit.distance > hit.distance)
                 {
@@ -54,7 +55,7 @@ public class AvoidanceAIInput : PlayerInput
                                 verticalComponent = y;
                                 horizontalComponent = x;
                                 rotation = controller.appliedRotationScaled(verticalComponent, horizontalComponent, 0);
-                                if (Physics.BoxCast(this.transform.position, new Vector3(1f, 0.25f, 1f), rotation * Vector3.forward, out hit, rotation, maxDistance))
+                                if (Physics.BoxCast(this.transform.position, new Vector3(1f, 0.25f, 1f), rotation * Vector3.forward, out hit, rotation, maxDistance, wallsLayerMask))
                                 {
                                     if (hit.distance < bestDistance.distance)
                                     {
