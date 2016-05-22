@@ -21,11 +21,19 @@ public class ProceduralDuplication : MonoBehaviour {
 
     static List<GameObject> simulate = new List<GameObject>(); //objects to duplicate and update
 
+    /// <summary>
+    /// Note: Do NOT resimulate gameplay logic; only visuals/audio/etc.
+    /// </summary>
+    /// <param name="toSimulate"></param>
     public static void AddToSimulate(GameObject toSimulate)
     {
         simulate.Add(toSimulate);
     }
 
+    /// <summary>
+    /// Note: Do NOT resimulate gameplay logic; only visuals/audio/etc.
+    /// </summary>
+    /// <param name="toSimulate"></param>
     public static void AddToSimulate(GameObject toSimulate, bool enableAfterStart)
     {
         if (started && enableAfterStart)
@@ -55,7 +63,14 @@ public class ProceduralDuplication : MonoBehaviour {
 
     static void simulateGameObject(GameObject toSimulate)
     {
-        toSimulate.transform.root.AddComponent<PositionWrapping>();
+        GameObject root = new GameObject(toSimulate.name + " Root");
+        root.transform.SetParent(toSimulate.transform.parent);
+        root.transform.localPosition = toSimulate.transform.localPosition;
+        root.transform.rotation = toSimulate.transform.rotation;
+
+        GameObject arrayBase = new GameObject(toSimulate.name + " ArrayBase");
+
+        arrayBase.AddComponent<PositionWrapping>().target = root.transform;
 
         for (int x = -1; x <= 1; x++)
         {
@@ -63,14 +78,19 @@ public class ProceduralDuplication : MonoBehaviour {
             {
                 for (int z = -1; z <= 1; z++)
                 {
-                    if (x == 0 && y == 0 && z == 0) //the position of the original
-                        continue;
-                    GameObject duplicated = Instantiate(toSimulate);
                     Vector3 offset = new Vector3(ProceduralGeneration.width * x, ProceduralGeneration.height * y, ProceduralGeneration.length * z);
-                    duplicated.transform.position = toSimulate.transform.position + offset;
-                    SimulateWithOffset simulator = duplicated.AddComponent<SimulateWithOffset>();
-                    simulator.offset = offset;
-                    simulator.target = toSimulate.transform;
+                    GameObject duplicated;
+                    if (x == 0 && y == 0 && z == 0) //the position of the original
+                    {
+                        duplicated = toSimulate;
+                    }
+                    else
+                    {
+                        duplicated = Instantiate(toSimulate);
+                    }
+                    duplicated.transform.SetParent(arrayBase.transform);
+                    duplicated.transform.localPosition = offset;
+                    duplicated.AddComponent<DuplicateRotation>().target = root.transform;
                 }
             }
         }

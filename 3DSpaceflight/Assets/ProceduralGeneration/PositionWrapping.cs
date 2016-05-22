@@ -3,15 +3,27 @@ using System.Collections;
 
 public class PositionWrapping : MonoBehaviour {
 	// Update is called once per frame
-	void Update () {
-        Vector3 position = transform.position;
-        position.x = (position.x + ProceduralGeneration.width) % (ProceduralGeneration.width);
-        position.y = (position.y + ProceduralGeneration.height) % (ProceduralGeneration.height);
-        position.z = (position.z + ProceduralGeneration.length) % (ProceduralGeneration.length);
-        if (position != transform.position)
+
+    public Transform target;
+
+    void Start()
+    {
+        if (target == null)
         {
-            Debug.Log("WRAP!");
-            transform.position = position;
+            target = this.transform; //wrap our own position
         }
+    }
+
+	void Update () 
+    {
+        transform.position = wrapPosition(target.position);
 	}
+
+    public static Vector3 wrapPosition(Vector3 unwrappedPosition)
+    {
+        unwrappedPosition.x = (unwrappedPosition.x + ProceduralGeneration.width) % (ProceduralGeneration.width);
+        unwrappedPosition.y = (unwrappedPosition.y + ProceduralGeneration.height) % (ProceduralGeneration.height);
+        unwrappedPosition.z = (unwrappedPosition.z + ProceduralGeneration.length) % (ProceduralGeneration.length);
+        return unwrappedPosition;
+    }
 }
