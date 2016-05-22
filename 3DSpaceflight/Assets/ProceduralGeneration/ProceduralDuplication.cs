@@ -47,7 +47,7 @@ public class ProceduralDuplication : MonoBehaviour {
                     if (x == 0 && y == 0 && z == 0) //the position of the original
                         continue;
                     GameObject duplicated = Instantiate(toDuplicate);
-                    duplicated.transform.position = toDuplicate.transform.position + ProceduralGeneration.scale * new Vector3(ProceduralGeneration.width * x, ProceduralGeneration.height * y, ProceduralGeneration.length * z);
+                    duplicated.transform.position = toDuplicate.transform.position + new Vector3(ProceduralGeneration.width * x, ProceduralGeneration.height * y, ProceduralGeneration.length * z);
                 }
             }
         }
@@ -66,7 +66,7 @@ public class ProceduralDuplication : MonoBehaviour {
                     if (x == 0 && y == 0 && z == 0) //the position of the original
                         continue;
                     GameObject duplicated = Instantiate(toSimulate);
-                    Vector3 offset = ProceduralGeneration.scale * new Vector3(ProceduralGeneration.width * x, ProceduralGeneration.height * y, ProceduralGeneration.length * z);
+                    Vector3 offset = new Vector3(ProceduralGeneration.width * x, ProceduralGeneration.height * y, ProceduralGeneration.length * z);
                     duplicated.transform.position = toSimulate.transform.position + offset;
                     SimulateWithOffset simulator = duplicated.AddComponent<SimulateWithOffset>();
                     simulator.offset = offset;

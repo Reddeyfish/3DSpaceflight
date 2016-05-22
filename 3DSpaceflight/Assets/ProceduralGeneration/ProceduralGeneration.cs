@@ -7,12 +7,16 @@ public class ProceduralGeneration : MonoBehaviour
     [SerializeField]
     protected GameObject meshPrefab;
 
-    public const int width = 32;
-    public const int height = 32;
-    public const int length = 32;
+    private const int _width = 32;
+    private const int _height = 32;
+    private const int _length = 32;
     public const int k = 1;
-    public const float scale = 5f;
+    private const float _scale = 5f;
     public const int numSeeds = 12;
+
+    public static float width { get { return _width * _scale; } }
+    public static float height { get { return _height * _scale; } }
+    public static float length { get { return _length * _scale; } }
 
     public Material m_material;
     GameObject m_mesh;
@@ -26,33 +30,33 @@ public class ProceduralGeneration : MonoBehaviour
     Vector3 minOfMirrors(Vector3 testPoint, Vector3 seed)
     {
         float diff = seed.x - testPoint.x;
-        if (diff > width / 2)
+        if (diff > _width / 2)
         {
-            seed.x -= width;
+            seed.x -= _width;
         }
-        else if (diff < -width / 2)
+        else if (diff < -_width / 2)
         {
-            seed.x += width;
+            seed.x += _width;
         }
 
         diff = seed.y - testPoint.y;
-        if (diff > height / 2)
+        if (diff > _height / 2)
         {
-            seed.y -= height;
+            seed.y -= _height;
         }
-        else if (diff < -height / 2)
+        else if (diff < -_height / 2)
         {
-            seed.y += height;
+            seed.y += _height;
         }
 
         diff = seed.z - testPoint.z;
-        if (diff > length / 2)
+        if (diff > _length / 2)
         {
-            seed.z -= length;
+            seed.z -= _length;
         }
-        else if (diff < -length / 2)
+        else if (diff < -_length / 2)
         {
-            seed.z += length;
+            seed.z += _length;
         }
 
         return seed;
@@ -102,11 +106,11 @@ public class ProceduralGeneration : MonoBehaviour
         //MarchingCubes.SetModeToTetrahedrons();
 
         //the index of the closest voronoi seed
-        int[, ,] voxelVoronoi = new int[width + 1, height + 1, length + 1];
+        int[, ,] voxelVoronoi = new int[_width + 1, _height + 1, _length + 1];
         //smoothmin distances
-        float[, ,] voxelSmoothMin = new float[width + 1, height + 1, length + 1];
+        float[, ,] voxelSmoothMin = new float[_width + 1, _height + 1, _length + 1];
         //final values
-        float[, ,] voxels = new float[width + 1, height + 1, length + 1];
+        float[, ,] voxels = new float[_width + 1, _height + 1, _length + 1];
         int x, y, z;
 
         float start = Time.realtimeSinceStartup;
@@ -115,15 +119,15 @@ public class ProceduralGeneration : MonoBehaviour
 
         for (int i = 0; i < seeds.Length; i++)
         {
-            seeds[i] = new Vector3(Random.value * (width + 1), Random.value * (height + 1), Random.value * (length + 1));
+            seeds[i] = new Vector3(Random.value * (_width + 1), Random.value * (_height + 1), Random.value * (_length + 1));
         }
 
         //populate the voronoi/smoothmin arrays
-        for (x = 0; x < width + 1; x++)
+        for (x = 0; x < _width + 1; x++)
         {
-            for (y = 0; y < height + 1; y++)
+            for (y = 0; y < _height + 1; y++)
             {
-                for (z = 0; z < length + 1; z++)
+                for (z = 0; z < _length + 1; z++)
                 {
                     Vector3 testPoint = new Vector3(x, y, z);
 
@@ -153,11 +157,11 @@ public class ProceduralGeneration : MonoBehaviour
         for (int i = 0; i < seeds.Length; i++)
         {
             //Fill voxels with values. Im using perlin noise but any method to create voxels will work
-            for (x = 0; x < width + 1; x++)
+            for (x = 0; x < _width + 1; x++)
             {
-                for (y = 0; y < height + 1; y++)
+                for (y = 0; y < _height + 1; y++)
                 {
-                    for (z = 0; z < length + 1; z++)
+                    for (z = 0; z < _length + 1; z++)
                     {
                         if (voxelVoronoi[x, y, z] != i) //we are not in the correct voronoi cell
                         {
@@ -176,7 +180,7 @@ public class ProceduralGeneration : MonoBehaviour
                 }
             }
 
-            Mesh mesh = MarchingCubes.CreateMesh(voxels, scale);
+            Mesh mesh = MarchingCubes.CreateMesh(voxels, _scale);
 
             //The diffuse shader wants uvs so just fill with a empty array, there not actually used
             mesh.uv = new Vector2[mesh.vertices.Length];
