@@ -15,6 +15,20 @@ public class AvoidanceAIInput : PlayerInput
         wallsLayerMask = LayerMask.GetMask("Wall");
     }
 
+    void handleRotation()
+    {
+        RaycastHit rotationHit;
+        if (Physics.Raycast(this.transform.position, Vector3.up, out rotationHit, maxDistance, wallsLayerMask))
+        {
+            Vector3 targetUp = Vector3.ProjectOnPlane(rotationHit.normal, transform.forward);
+            controller.rotationalAxisScaled = Mathf.Sign(Vector3.Dot(transform.forward, Vector3.Cross(targetUp, transform.up)));
+        }
+        else
+        {
+            controller.rotationalAxisScaled = 0;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -33,10 +47,8 @@ public class AvoidanceAIInput : PlayerInput
                     //good change, move in direction
                     controller.verticalAxisScaled = verticalComponent;
                     controller.horizontalAxisScaled = horizontalComponent;
-                    
 
-                    Vector3 targetUp = Vector3.ProjectOnPlane(newHit.normal, transform.forward);
-                    controller.rotationalAxisScaled = Mathf.Sign(Vector3.Dot(transform.forward, Vector3.Cross(targetUp, transform.up)));
+                    handleRotation();
                     return;
                 }
                 else
@@ -70,6 +82,9 @@ public class AvoidanceAIInput : PlayerInput
                                     controller.verticalAxisScaled = verticalComponent;
                                     controller.horizontalAxisScaled = horizontalComponent;
                                     controller.rotationalAxisScaled = 0;
+
+                                    handleRotation();
+
                                     return;
                                 }
                             }
@@ -80,9 +95,7 @@ public class AvoidanceAIInput : PlayerInput
                     controller.verticalAxisScaled = bestVerticalComponent;
                     controller.horizontalAxisScaled = bestHorizontalComponent;
 
-                    Vector3 targetUp = Vector3.ProjectOnPlane(bestDistance.normal, transform.forward);
-                    controller.rotationalAxisScaled = Mathf.Sign(Vector3.Dot(transform.forward, Vector3.Cross(targetUp, transform.up)));
-
+                    handleRotation();
                     return;
                 }
             }
@@ -91,6 +104,9 @@ public class AvoidanceAIInput : PlayerInput
                 controller.verticalAxisScaled = verticalComponent;
                 controller.horizontalAxisScaled = horizontalComponent;
                 controller.rotationalAxisScaled = 0;
+
+                handleRotation();
+
                 return;
             }
         }
@@ -99,6 +115,9 @@ public class AvoidanceAIInput : PlayerInput
             controller.verticalAxisScaled = 0;
             controller.horizontalAxisScaled = 0;
             controller.rotationalAxisScaled = 0;
+
+            handleRotation();
+
             return;
         }
     }
