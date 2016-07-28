@@ -12,7 +12,7 @@ public class ProceduralGeneration : MonoBehaviour
     private const int _length = 32;
     public const int k = 1;
     private const float _scale = 5f;
-    public const int numSeeds = 12;
+    public const int numSeeds = 20;
 
     public static float width { get { return _width * _scale; } }
     public static float height { get { return _height * _scale; } }
@@ -95,7 +95,7 @@ public class ProceduralGeneration : MonoBehaviour
         //Target is the value that represents the surface of mesh
         //For example the perlin noise has a range of -1 to 1 so the mid point is were we want the surface to cut through
         //The target value does not have to be the mid point it can be any value with in the range
-        MarchingCubes.SetTarget(-0.925f);
+        MarchingCubes.SetTarget(-0.8825f);
 
         //Winding order of triangles use 2,1,0 or 0,1,2
         MarchingCubes.SetWindingOrder(2, 1, 0);
@@ -183,7 +183,6 @@ public class ProceduralGeneration : MonoBehaviour
             Mesh mesh = MarchingCubes.CreateMesh(voxels, _scale);
 
             //The diffuse shader wants uvs so just fill with a empty array, there not actually used
-            mesh.uv = new Vector2[mesh.vertices.Length];
             mesh.RecalculateNormals();
 
             m_mesh = Instantiate(meshPrefab);

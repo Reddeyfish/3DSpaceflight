@@ -8,7 +8,7 @@ namespace MarchingCubesProject
     static public class MarchingCubes
     {
         //Function delegates, makes using functions pointers easier
-        delegate void MODE_FUNC(Vector3 pos, float[] cube, List<Vector3> vertList, List<int> indexList);
+        delegate void MODE_FUNC(Vector3 pos, float[] cube, List<Vector3> vertList, List<int> indexList, List<Vector2> uvList);
         //Function poiter to what mode to use, cubes or tetrahedrons
         static MODE_FUNC Mode_Func = MarchCube;
         //Set the mode to use
@@ -31,6 +31,7 @@ namespace MarchingCubesProject
 
             List<Vector3> verts = new List<Vector3>();
             List<int> index = new List<int>();
+            List<Vector2> UVs = new List<Vector2>();
 
             float[] cube = new float[8];
 
@@ -43,7 +44,7 @@ namespace MarchingCubesProject
                         //Get the values in the 8 neighbours which make up a cube
                         FillCube(x, y, z, voxels, cube);
                         //Perform algorithm
-                        Mode_Func(new Vector3(x, y, z), cube, verts, index);
+                        Mode_Func(new Vector3(x, y, z), cube, verts, index, UVs);
                     }
                 }
             }
@@ -55,8 +56,9 @@ namespace MarchingCubesProject
                 verts[i] *= scale;
             }
 
-                mesh.vertices = verts.ToArray();
+            mesh.vertices = verts.ToArray();
             mesh.triangles = index.ToArray();
+            mesh.uv = UVs.ToArray();
 
             return mesh;
         }
@@ -76,7 +78,7 @@ namespace MarchingCubesProject
         }
 
         //MarchCube performs the Marching Cubes algorithm on a single cube
-        static void MarchCube(Vector3 pos, float[] cube, List<Vector3> vertList, List<int> indexList)
+        static void MarchCube(Vector3 pos, float[] cube, List<Vector3> vertList, List<int> indexList, List<Vector2> uvList)
         {
             int i, j, vert, idx;
             int flagIndex = 0;
@@ -118,6 +120,9 @@ namespace MarchingCubesProject
                     indexList.Add(idx + windingOrder[j]);
                     vertList.Add(edgeCubeVertex[vert]);
                 }
+                uvList.Add(Vector2.up);
+                uvList.Add(Vector2.zero);
+                uvList.Add(Vector2.one);
             }
         }
 
@@ -171,7 +176,7 @@ namespace MarchingCubesProject
         }
 
         //MarchCubeTetrahedron performs the Marching Tetrahedrons algorithm on a single cube
-        static void MarchCubeTetrahedron(Vector3 pos, float[] cube, List<Vector3> vertList, List<int> indexList)
+        static void MarchCubeTetrahedron(Vector3 pos, float[] cube, List<Vector3> vertList, List<int> indexList, List<Vector2> uvList)
         {
             int i, j, vertexInACube;
 
